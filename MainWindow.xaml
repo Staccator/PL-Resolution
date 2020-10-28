@@ -3,10 +3,49 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:PL_Resolution"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="PL Resolution"
+        Width="1000"
+        Height="800"
+        Topmost="False"
+        ResizeMode="CanResize"
+        WindowStartupLocation="CenterScreen"
+        Background="#333">
+    <Window.Resources>
+        <Style TargetType="Label">
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="FontFamily" Value="David" />
+            <Setter Property="Foreground" Value="#ccc" />
+            <Setter Property="Background" Value="#333" />
+            <Setter Property="FontSize" Value="25" />
+            <Setter Property="BorderBrush" Value="#222" />
+            <Setter Property="BorderThickness" Value="5" />
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Height" Value="45" />
+            <Setter Property="Margin" Value="5,6" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="FontFamily" Value="David" />
+            <Setter Property="FontSize" Value="20" />
+        </Style>
+    </Window.Resources>
+    <Grid Margin="15"
+          Background="#222">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300" /> <ColumnDefinition />
+        </Grid.ColumnDefinitions>
 
+        <StackPanel Grid.Column="0" Orientation="Vertical">
+            <Button Content="Załaduj dane" Click="LoadClausesFromFile" />
+            <Label Name="ResultLabel" Content="Yes" />
+        </StackPanel>
+        <ScrollViewer Grid.Column="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            <Label Name="ContentLabel"
+                   Content="Inba"
+                   VerticalAlignment="Top"
+                   HorizontalAlignment="Left" />
+        </ScrollViewer>
     </Grid>
 </Window>
