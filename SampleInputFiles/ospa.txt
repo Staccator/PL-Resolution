@@ -1,0 +1,9 @@
+A swędząca_wysypka
+B gorączka
+C ospa_wietrzna
+D rozpalone_czoło
+
+-A -B C
+-D B
+A
+-C
