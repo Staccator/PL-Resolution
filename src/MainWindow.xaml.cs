@@ -1,6 +1,8 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Windows;
 using Microsoft.Win32;
+using PL_Resolution.Logic.Models;
 using PL_Resolution.Logic.Services;
 
 namespace PL_Resolution
@@ -10,6 +12,7 @@ namespace PL_Resolution
         public MainWindow()
         {
             InitializeComponent();
+            // TestMethod();
         }
 
         private void LoadClausesFromFile(object sender, RoutedEventArgs e)
@@ -35,12 +38,14 @@ namespace PL_Resolution
                 try
                 {
                     var parseResult = Parser.Parse(fileLines);
-                    var solver = new ResolutionSolver(parseResult.indexToName, true);
-                    solver.FindResolution(parseResult.clauses);
+                    var solver = new Solver(parseResult.indexToName, true);
+                    var resolution = solver.FindResolution(parseResult.clauses);
+                    ResultLabel.Content = resolution.result;
+                    LogLabel.Content = resolution.log;
                 }
                 catch (ParseException parseException)
                 {
-                    ContentLabel.Content = parseException.Message;
+                    LogLabel.Content = parseException.Message;
                 }
             }
         }

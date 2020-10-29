@@ -39,11 +39,10 @@
 
         <StackPanel Grid.Column="0" Orientation="Vertical">
             <Button Content="Załaduj dane" Click="LoadClausesFromFile" />
-            <Label Name="ResultLabel" Content="Yes" />
+            <Label Name="ResultLabel" Content="Result: " />
         </StackPanel>
         <ScrollViewer Grid.Column="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-            <Label Name="ContentLabel"
-                   Content="Inba"
+            <Label Name="LogLabel"
                    VerticalAlignment="Top"
                    HorizontalAlignment="Left" />
         </ScrollViewer>

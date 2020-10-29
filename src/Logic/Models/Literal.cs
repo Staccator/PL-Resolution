@@ -7,6 +7,7 @@ namespace PL_Resolution.Logic.Models
         private int _id;
         private bool _isNegated;
         
+        public int Id => _id;
         public Literal Negation => new Literal(_id, !_isNegated);
         public Literal(int id, bool isNegated)
         {
