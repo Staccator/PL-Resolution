@@ -13,19 +13,16 @@ namespace PL_Resolution.Logic.Models
 
         public override bool Equals(object obj)
         {
-            Console.WriteLine("2");
             return obj is Clause other && Equals(other);
         }
 
         public static bool operator ==(Clause left, Clause right)
         {
-            Console.WriteLine("4");
             return left.Equals(right);
         }
 
         public static bool operator !=(Clause left, Clause right)
         {
-            Console.WriteLine("5");
             return !left.Equals(right);
         }
 

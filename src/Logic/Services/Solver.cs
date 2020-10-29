@@ -8,12 +8,11 @@ namespace PL_Resolution.Logic.Services
     public class Solver
     {
         private readonly Dictionary<int, string> _indexToName;
-        private readonly bool _shouldDiscardTautologies;
+        private readonly bool _showFullNames = true;
 
-        public Solver(Dictionary<int, string> indexToName, bool shouldDiscardTautologies)
+        public Solver(Dictionary<int, string> indexToName)
         {
             _indexToName = indexToName;
-            _shouldDiscardTautologies = shouldDiscardTautologies;
         }
 
         public (bool result, string log) FindResolution(List<Clause> inputClauses)
@@ -87,10 +86,11 @@ namespace PL_Resolution.Logic.Services
         {
             var ancestors = !(clause.Ancestors is null) ? $"z {clause.Ancestors}" : "";
             var literals = clause.Literals.ToList();
-            var clauseString = literals.Any() ? literals.First().ToString() + " " : "";
+            var clauseString = literals.Any() ? (!_showFullNames ? literals.First().ToString() :_indexToName[literals.First().Id])+ " " : "";
             for (int i = 1; i < literals.Count; i++)
             {
-                clauseString += $" v {literals[i]}";
+                var literal = _showFullNames ? _indexToName[literals[i].Id] : literals[i].ToString();
+                clauseString += $" v {literal}";
             }
 
             return $"{clause.Index}. {ancestors} : {clauseString}";
