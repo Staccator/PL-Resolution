@@ -5,6 +5,8 @@ namespace PL_Resolution.Logic.Models
 {
     public class Clause
     {
+        public int Index { get; set; }
+        public (int, int)? Ancestors { get; private set; }
         private HashSet<Literal> _literals;
         public HashSet<Literal> Literals => _literals;
 
@@ -13,14 +15,12 @@ namespace PL_Resolution.Logic.Models
             _literals = new HashSet<Literal>(literals);
         }
 
-        public static Clause Empty => new Clause(new List<Literal>());
+        public bool Empty => !_literals.Any();
 
-        public bool IsTautology => throw new System.NotImplementedException();
-
-        public Clause ResolveWith(Clause c2, Literal literal)
+        public Clause ResolveWith(Clause otherClause, Literal literal)
         {
             var result = _literals.Where(l => l != literal).ToHashSet();
-            foreach (var other in c2.Literals)
+            foreach (var other in otherClause.Literals)
             {
                 if (result.Contains(other.Negation))
                 {
@@ -31,8 +31,11 @@ namespace PL_Resolution.Logic.Models
                     result.Add(other);
                 }
             }
-
-            return new Clause(result);
+            
+            return new Clause(result)
+            {
+                Ancestors = (Index, otherClause.Index)
+            };
         }
     }
 }

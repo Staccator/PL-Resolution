@@ -35,7 +35,8 @@ namespace PL_Resolution
                 try
                 {
                     var parseResult = Parser.Parse(fileLines);
-                    ResolutionSolver.FindResolution(parseResult);
+                    var solver = new ResolutionSolver(parseResult.indexToName, true);
+                    solver.FindResolution(parseResult.clauses);
                 }
                 catch (ParseException parseException)
                 {

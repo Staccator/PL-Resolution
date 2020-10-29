@@ -7,12 +7,13 @@ namespace PL_Resolution.Logic.Services
 {
     public static class Parser
     {
-        public static ParseResult Parse(string[] fileLines)
+        public static (List<Clause> clauses, Dictionary<int, string> indexToName) Parse(string[] fileLines)
         {
             var symbolsPhase = true;
             var symbolToIndex = new Dictionary<string, int>();
             var indexToName = new Dictionary<int, string>();
-            var index = 0;
+            var symbolIndex = 0;
+            var clauseIndex = 0;
 
             var resultClauses = new List<Clause>();
 
@@ -32,7 +33,7 @@ namespace PL_Resolution.Logic.Services
                         throw new ParseException(i + 1, "There must be at least 2 elements in line - symbol and name");
                     var symbol = split[0];
                     var name = split[1];
-                    var newIndex = ++index;
+                    var newIndex = ++symbolIndex;
 
                     symbolToIndex[symbol] = newIndex;
                     indexToName[newIndex] = name;
@@ -57,11 +58,11 @@ namespace PL_Resolution.Logic.Services
                         literals.Add(literal);
                     }
 
-                    resultClauses.Add(new Clause(literals));
+                    resultClauses.Add(new Clause(literals){Index = ++clauseIndex});
                 }
             }
 
-            return new ParseResult(resultClauses, indexToName);
+            return (resultClauses, indexToName);
         }
     }
 }

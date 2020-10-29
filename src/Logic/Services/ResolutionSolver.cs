@@ -1,42 +1,62 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using PL_Resolution.Logic.Models;
 
 namespace PL_Resolution.Logic.Services
 {
-    public static class ResolutionSolver
+    public class ResolutionSolver
     {
-        private static readonly bool shouldDiscardTautologies = true;
+        private readonly Dictionary<int, string> _indexToName;
+        private readonly bool _shouldDiscardTautologies;
 
-        public static bool FindResolution(ParseResult parseResult)
+        public ResolutionSolver(Dictionary<int, string> indexToName, bool shouldDiscardTautologies)
         {
-            var clauses = parseResult.Clauses.ToHashSet();
-            var newClauses = new HashSet<Clause>();
+            _indexToName = indexToName;
+            _shouldDiscardTautologies = shouldDiscardTautologies;
+        }
+
+        public bool FindResolution(List<Clause> inputClauses)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("Wejście Programu");
+            int courseIndex = 0;
+            int nextClauseIndex = inputClauses.Max(c => c.Index) + 1;
+            var allClauses = inputClauses.ToHashSet();
             do
             {
-                var clausesList = clauses.ToList();
-                for (var i = 0; i < clausesList.Count - 1; i++)
+                sb.AppendLine($"Przebieg {++courseIndex}:");
+                var newClauses = new HashSet<Clause>();
+                var allClausesList = allClauses.ToList();
+                for (var i = 0; i < allClausesList.Count - 1; i++)
                 {
-                    var ci = clausesList[i];
-                    for (var j = i + 1; j < clausesList.Count; j++)
+                    var ci = allClausesList[i];
+                    for (var j = i + 1; j < allClausesList.Count; j++)
                     {
-                        var cj = clausesList[j];
+                        var cj = allClausesList[j];
                         var resolvents = ResolveTwoClauses(ci, cj);
-                        if (resolvents.Contains(Clause.Empty)) return true;
+                        
+                        // found solution
+                        if (resolvents.Any(r => r.Empty)) return true;
 
                         newClauses.UnionWith(resolvents);
                     }
                 }
 
-                // if new is subset of clauses then return false
-                if (newClauses.IsSubsetOf(clauses)) return false;
+                // no new clauses found
+                if (newClauses.IsSubsetOf(allClauses)) return false;
 
-                // clauses <- clauses U new
-                clauses.UnionWith(newClauses);
+                var uniqueNewClauses = allClauses.Except(newClauses);
+                foreach (var clause in uniqueNewClauses)
+                {
+                    allClauses.Add(clause);
+                    sb.AppendLine(ClauseToString(clause));
+                }
+                
             } while (true);
         }
 
-        private static HashSet<Clause> ResolveTwoClauses(Clause c1, Clause c2)
+        private HashSet<Clause> ResolveTwoClauses(Clause c1, Clause c2)
         {
             var resolvents = new HashSet<Clause>();
             foreach (var literal in c1.Literals)
@@ -49,9 +69,17 @@ namespace PL_Resolution.Logic.Services
             return resolvents;
         }
 
-        private static void DiscardTautologies(HashSet<Clause> clauses)
+        private string ClauseToString(Clause clause)
         {
-            if (shouldDiscardTautologies) clauses.RemoveWhere(c => c.IsTautology);
+            var ancestors = !(clause.Ancestors is null) ? $"z ${clause.Ancestors}" : "";
+            var literals = clause.Literals.ToList();
+            var clauseString = literals.First().ToString() + " ";
+            for (int i = 1; i < literals.Count; i++)
+            {
+                clauseString += $" v {literals[i]}";
+            }
+
+            return $"{clause.Index}. {ancestors} : {clauseString}";
         }
     }
 }
