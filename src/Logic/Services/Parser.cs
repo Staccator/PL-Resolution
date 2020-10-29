@@ -1,7 +1,67 @@
-﻿namespace PL_Resolution.Logic.Services
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using PL_Resolution.Logic.Models;
+
+namespace PL_Resolution.Logic.Services
 {
-    public class Parser
+    public static class Parser
     {
-        
+        public static ParseResult Parse(string[] fileLines)
+        {
+            var symbolsPhase = true;
+            var symbolToIndex = new Dictionary<string, int>();
+            var indexToName = new Dictionary<int, string>();
+            var index = 0;
+
+            var resultClauses = new List<Clause>();
+
+            for (var i = 0; i < fileLines.Length; i++)
+            {
+                var line = fileLines[i];
+                if (string.IsNullOrWhiteSpace(line))
+                {
+                    symbolsPhase = false;
+                    continue;
+                }
+
+                var split = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                if (symbolsPhase)
+                {
+                    if (split.Length < 2)
+                        throw new ParseException(i + 1, "There must be at least 2 elements in line - symbol and name");
+                    var symbol = split[0];
+                    var name = split[1];
+                    var newIndex = ++index;
+
+                    symbolToIndex[symbol] = newIndex;
+                    indexToName[newIndex] = name;
+                }
+                else
+                {
+                    var literals = new List<Literal>();
+                    for (var j = 0; j < split.Length; j++)
+                    {
+                        var symbol = split[j];
+                        var negation = false;
+                        if (symbol.First() == '-')
+                        {
+                            negation = true;
+                            symbol = symbol.Substring(1);
+                        }
+
+                        if (!symbolToIndex.ContainsKey(symbol))
+                            throw new ParseException(i + 1, "Unrecognized symbol");
+
+                        var literal = new Literal(symbolToIndex[symbol], negation);
+                        literals.Add(literal);
+                    }
+
+                    resultClauses.Add(new Clause(literals));
+                }
+            }
+
+            return new ParseResult(resultClauses, indexToName);
+        }
     }
 }

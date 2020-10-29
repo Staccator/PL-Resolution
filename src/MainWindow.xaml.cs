@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
+﻿using System.IO;
 using System.Windows;
-using System.Windows.Shapes;
 using Microsoft.Win32;
+using PL_Resolution.Logic.Services;
 
 namespace PL_Resolution
 {
@@ -32,12 +28,19 @@ namespace PL_Resolution
             };
 
             var result = ofd.ShowDialog();
-            const int fileShapeSize = 5;
 
             if (result.HasValue && result.Value)
             {
-                var file = File.ReadAllText(ofd.FileName);
-                var split = file.Split(new[] {' ', '\r', '\n'}, StringSplitOptions.RemoveEmptyEntries);
+                var fileLines = File.ReadAllLines(ofd.FileName);
+                try
+                {
+                    var parseResult = Parser.Parse(fileLines);
+                    ResolutionSolver.FindResolution(parseResult);
+                }
+                catch (ParseException parseException)
+                {
+                    ContentLabel.Content = parseException.Message;
+                }
             }
         }
     }

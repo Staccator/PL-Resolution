@@ -9,6 +9,6 @@ namespace PL_Resolution.Logic.Services
             Message = $"Line {line}: {message}!";
         }
 
-        public string Message { get; }
+        public override string Message { get; }
     }
 }

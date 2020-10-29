@@ -1,14 +1,47 @@
-﻿namespace PL_Resolution.Logic.Models
+﻿using System;
+
+namespace PL_Resolution.Logic.Models
 {
-    public class Literal
+    public struct Literal
     {
-        public Literal(int id, bool negated)
+        private int _id;
+        private bool _isNegated;
+        
+        public Literal Negation => new Literal(_id, !_isNegated);
+        public Literal(int id, bool isNegated)
         {
-            Id = id;
-            Negated = negated;
+            _id = id;
+            _isNegated = isNegated;
         }
 
-        public int Id { get; }
-        public bool Negated { get; set; }
+        public override string ToString()
+        {
+            return (_isNegated ? "-" : "") + _id;
+        }
+        
+        public bool Equals(Literal other)
+        {
+            return _id == other._id && _isNegated == other._isNegated;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Literal other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(_id, _isNegated);
+        }
+
+        public static bool operator ==(Literal left, Literal right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Literal left, Literal right)
+        {
+            return !left.Equals(right);
+        }
     }
 }
