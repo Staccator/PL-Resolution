@@ -1,0 +1,28 @@
+A wykrzywione_usta
+B osłabienie_mięśni_twarzy
+C trudności_w_poruszaniu
+D niedowład_kończyn
+E drętwienie
+F niewyraźna_mowa
+G osłabienie_mięśni_języka_gardła
+H trudności_w_połykaniu
+I niewyraźny_obraz
+J zaburzenie_widzenia
+K częściowy_zanik_wzroku
+L ograniczone_pole_widzenia
+M udar_mózgu
+
+-A B
+-C D
+-E D
+-F G
+-H G
+-I J
+-K J
+-L J
+-B -D -G -J M
+A
+E
+F
+L
+-M

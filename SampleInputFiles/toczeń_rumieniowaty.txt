@@ -1,0 +1,20 @@
+A ból_oczu
+B nadwrażliwość_na_światło_słoneczne
+C bolesny_kaszel
+D zapalenie_opłucnej
+E rumień_w_kształcie_motyla
+F toczeń
+G napady_drgawek
+H zaburzenia_psychiczne
+I stan_podgorączkowy
+
+-A B
+-C D
+-E F
+-B -D -G -H -I F
+A
+C
+G
+H
+I
+-F

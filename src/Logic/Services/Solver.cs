@@ -19,18 +19,15 @@ namespace PL_Resolution.Logic.Services
         {
             var log = new StringBuilder();
             log.AppendLine("Wejście Programu");
-            foreach (var clause in inputClauses)
-            {
-                log.AppendLine(ClauseToString(clause));
-            }
-            int courseIndex = 0;
-            int nextClauseIndex = inputClauses.Max(c => c.Index) + 1;
+            foreach (var clause in inputClauses) log.AppendLine(ClauseToString(clause));
+            var courseIndex = 0;
+            var nextClauseIndex = inputClauses.Max(c => c.Index) + 1;
             var allClauses = inputClauses.ToList();
             do
             {
-                log.AppendLine($"Przebieg {++courseIndex}:");
+                log.AppendLine($"\nPrzebieg {++courseIndex}:");
                 var newClauses = new List<Clause>();
-                
+
                 for (var i = 0; i < allClauses.Count - 1; i++)
                 {
                     var ci = allClauses[i];
@@ -38,11 +35,11 @@ namespace PL_Resolution.Logic.Services
                     {
                         var cj = allClauses[j];
                         var resolvents = ResolveTwoClauses(ci, cj);
-                        
-                        // found solution
+
                         if (resolvents.Any(r => r.Empty))
                         {
-                            log.AppendLine(ClauseToString(resolvents.First(r => r.Empty)));
+                            var emptyClause = resolvents.First(r => r.Empty);
+                            log.AppendLine($"Pusta Klauzula: <- {emptyClause.Ancestors}");
                             return (true, log.ToString());
                         }
 
@@ -50,7 +47,6 @@ namespace PL_Resolution.Logic.Services
                     }
                 }
 
-                // remove tautologies
                 var distinct = newClauses.Distinct().ToList();
                 var unique = distinct.Where(d => allClauses.All(a => a != d)).ToList();
                 if (!unique.Any())
@@ -58,8 +54,8 @@ namespace PL_Resolution.Logic.Services
                     log.AppendLine("Nie znaleziono żadnych nowych klauzul");
                     return (false, log.ToString());
                 }
-                
-                for (int i = 0; i < unique.Count; i++)
+
+                for (var i = 0; i < unique.Count; i++)
                 {
                     var clause = unique[i];
                     clause.Index = nextClauseIndex++;
@@ -84,13 +80,15 @@ namespace PL_Resolution.Logic.Services
 
         private string ClauseToString(Clause clause)
         {
-            var ancestors = !(clause.Ancestors is null) ? $"z {clause.Ancestors}" : "";
+            var ancestors = !(clause.Ancestors is null) ? $"<- {clause.Ancestors}" : "";
             var literals = clause.Literals.ToList();
-            var clauseString = literals.Any() ? (!_showFullNames ? literals.First().ToString() :_indexToName[literals.First().Id])+ " " : "";
-            for (int i = 1; i < literals.Count; i++)
+            var first = literals.First();
+            var clauseString = (first.IsNegated ? "-" : "") + (!_showFullNames ? first.ToString() : _indexToName[first.Id]) + " ";
+            for (var i = 1; i < literals.Count; i++)
             {
                 var literal = _showFullNames ? _indexToName[literals[i].Id] : literals[i].ToString();
-                clauseString += $" v {literal}";
+                var optionalDash = literals[i].IsNegated ? "-" : "";
+                clauseString += $" v {optionalDash}{literal}";
             }
 
             return $"{clause.Index}. {ancestors} : {clauseString}";
