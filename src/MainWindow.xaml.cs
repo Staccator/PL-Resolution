@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Text;
 using System.Windows;
+using System.Windows.Media;
 using Microsoft.Win32;
 using PL_Resolution.Logic.Models;
 using PL_Resolution.Logic.Services;
@@ -41,6 +42,7 @@ namespace PL_Resolution
                     var solver = new Solver();
                     var resolution = solver.FindResolution(clauses);
                     ResultLabel.Content = resolution.result ? "Znaleziono rozwiązanie" : "Brak rozwiązania";
+                    ResultLabel.Foreground = new SolidColorBrush(resolution.result ? Colors.GreenYellow : Colors.Red);
                     content = resolution.log;
                 }
                 catch (ParseException parseException)

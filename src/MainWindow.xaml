@@ -61,6 +61,7 @@
         </StackPanel>
         <ScrollViewer Grid.Column="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
             <Label Name="LogLabel"
+                   FontSize="23" 
                    xml:lang="pl-PL"
                    VerticalAlignment="Top"
                    HorizontalAlignment="Left" />
