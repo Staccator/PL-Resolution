@@ -1,6 +1,8 @@
 ﻿using System.IO;
+using System.Text;
 using System.Windows;
 using Microsoft.Win32;
+using PL_Resolution.Logic.Models;
 using PL_Resolution.Logic.Services;
 
 namespace PL_Resolution
@@ -8,7 +10,7 @@ namespace PL_Resolution
     public partial class MainWindow
     {
         public MainWindow()
-        {
+        { 
             InitializeComponent();
         }
 
@@ -16,7 +18,7 @@ namespace PL_Resolution
         {
             var dll = new FileInfo(System.Reflection.Assembly.GetExecutingAssembly().Location);
             var filesToLoadDir = dll.Directory.Parent.Parent.Parent.Parent.FullName + "\\SampleInputFiles";
-            
+
             OpenFileDialog ofd = new OpenFileDialog
             {
                 InitialDirectory = filesToLoadDir,
@@ -31,19 +33,23 @@ namespace PL_Resolution
 
             if (result.HasValue && result.Value)
             {
-                var fileLines = File.ReadAllLines(ofd.FileName);
+                var fileLines = File.ReadAllLines(ofd.FileName, Encoding.UTF8);
+                string content = "";
                 try
                 {
-                    var parseResult = Parser.Parse(fileLines);
-                    var solver = new Solver(parseResult.indexToName);
-                    var resolution = solver.FindResolution(parseResult.clauses);
+                    var clauses = Parser.Parse(fileLines);
+                    var solver = new Solver();
+                    var resolution = solver.FindResolution(clauses);
                     ResultLabel.Content = resolution.result ? "Znaleziono rozwiązanie" : "Brak rozwiązania";
-                    LogLabel.Content = resolution.log;
+                    content = resolution.log;
                 }
                 catch (ParseException parseException)
                 {
-                    LogLabel.Content = parseException.Message;
+                    content = parseException.Message;
                 }
+
+                // https://stackoverflow.com/questions/7861699/cannot-see-underscore-in-wpf-content
+                LogLabel.Content = content.Replace("_", "__");
             }
         }
     }

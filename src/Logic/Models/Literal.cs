@@ -1,29 +1,41 @@
 ﻿using System;
+using System.Reflection.Metadata;
 
 namespace PL_Resolution.Logic.Models
 {
     public struct Literal
     {
-        private int _id;
-        private bool _isNegated;
-        
-        public int Id => _id;
-        public bool IsNegated => _isNegated;
-        public Literal Negation => new Literal(_id, !_isNegated);
-        public Literal(int id, bool isNegated)
+        public string Id { get; }
+
+        public bool IsNegated { get; }
+
+        public string Name { get; }
+
+        public Literal Negation => new Literal(Id, Name, !IsNegated);
+
+        public Literal(string id, string name, bool isNegated)
         {
-            _id = id;
-            _isNegated = isNegated;
+            Id = id;
+            IsNegated = isNegated;
+            Name = name;
         }
 
         public override string ToString()
         {
-            return (_isNegated ? "-" : "") + _id;
+            string result = "";
+            if (IsNegated)
+            {
+                result += Constants.NEG;
+            }
+
+            result += Options.UseFullNames ? Name : Id;
+
+            return result;
         }
-        
+
         public bool Equals(Literal other)
         {
-            return _id == other._id && _isNegated == other._isNegated;
+            return Id == other.Id && IsNegated == other.IsNegated;
         }
 
         public override bool Equals(object obj)
@@ -33,7 +45,7 @@ namespace PL_Resolution.Logic.Models
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(_id, _isNegated);
+            return HashCode.Combine(Id, IsNegated);
         }
 
         public static bool operator ==(Literal left, Literal right)

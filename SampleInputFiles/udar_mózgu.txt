@@ -12,17 +12,17 @@ K częściowy_zanik_wzroku
 L ograniczone_pole_widzenia
 M udar_mózgu
 
--A B
--C D
--E D
--F G
--H G
--I J
--K J
--L J
--B -D -G -J M
+~A B
+~C D
+~E D
+~F G
+~H G
+~I J
+~K J
+~L J
+~B ~D ~G ~J M
 A
 E
 F
 L
--M
+~M

@@ -8,13 +8,13 @@ G napady_drgawek
 H zaburzenia_psychiczne
 I stan_podgorączkowy
 
--A B
--C D
--E F
--B -D -G -H -I F
+~A B
+~C D
+~E F
+~B ~D ~G ~H ~I F
 A
 C
 G
 H
 I
--F
+~F

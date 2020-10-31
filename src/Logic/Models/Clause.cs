@@ -6,9 +6,22 @@ namespace PL_Resolution.Logic.Models
 {
     public struct Clause : IEquatable<Clause>
     {
+        public int Index { get; set; }
+        public (int, int)? Ancestors { get; private set; }
+        public List<Literal> Literals { get; }
+        public HashSet<Literal> LiteralsSet { get; }
+
+        public Clause(IEnumerable<Literal> literals)
+        {
+            Literals = literals.ToList();
+            LiteralsSet = new HashSet<Literal>(literals);
+            Ancestors = null;
+            Index = -1;
+        }
+
         public bool Equals(Clause other)
         {
-            return _literals.SetEquals(other._literals);
+            return LiteralsSet.SetEquals(other.LiteralsSet);
         }
 
         public override bool Equals(object obj)
@@ -26,23 +39,12 @@ namespace PL_Resolution.Logic.Models
             return !left.Equals(right);
         }
 
-        public int Index { get; set; }
-        public (int, int)? Ancestors { get; private set; }
-        private readonly HashSet<Literal> _literals;
-        public HashSet<Literal> Literals => _literals;
 
-        public Clause(IEnumerable<Literal> literals)
-        {
-            _literals = new HashSet<Literal>(literals);
-            Ancestors = null;
-            Index = -1;
-        }
-
-        public bool Empty => !_literals.Any();
+        public bool Empty => !Literals.Any();
 
         public Clause ResolveWith(Clause otherClause, Literal literal)
         {
-            var result = _literals.Where(l => l != literal).ToHashSet();
+            var result = Literals.Where(l => l != literal).ToList();
             foreach (var other in otherClause.Literals)
             {
                 if (other.Id == literal.Id)
@@ -54,11 +56,20 @@ namespace PL_Resolution.Logic.Models
                     result.Add(other);
                 }
             }
-            
+
             return new Clause(result)
             {
                 Ancestors = (Index, otherClause.Index)
             };
+        }
+
+        public override string ToString()
+        {
+            var ancestors = Ancestors != null ? $"<- {Ancestors}" : "";
+
+            var clauseString = String.Join($" {Constants.ALT} ", Literals);
+
+            return $"{Index}. {ancestors} : {clauseString}";
         }
     }
 }

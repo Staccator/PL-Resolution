@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:opt="clr-namespace:PL_Resolution.Logic.Models"
         mc:Ignorable="d"
         Title="PL Rezolucja"
         Width="1200"
@@ -12,6 +13,7 @@
         WindowStartupLocation="CenterScreen"
         Background="#333">
     <Window.Resources>
+        <opt:Options x:Key="options"/>
         <Style TargetType="Label">
             <Setter Property="HorizontalContentAlignment" Value="Center" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
@@ -30,19 +32,36 @@
             <Setter Property="FontFamily" Value="David" />
             <Setter Property="FontSize" Value="20" />
         </Style>
+        <Style TargetType="CheckBox">
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="FontFamily" Value="David" />
+            <Setter Property="Foreground" Value="#ccc" />
+            <Setter Property="Background" Value="#888" />
+            <Setter Property="Margin" Value="10, 6"/>
+            <Setter Property="FontSize" Value="25" />
+            <Setter Property="BorderBrush" Value="#222" />
+            <Setter Property="BorderThickness" Value="5" />
+        </Style>
+
     </Window.Resources>
     <Grid Margin="15"
           Background="#222">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="300" /> <ColumnDefinition />
+            <ColumnDefinition Width="300" />
+            <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
         <StackPanel Grid.Column="0" Orientation="Vertical">
             <Button Content="Załaduj dane" Click="LoadClausesFromFile" />
             <Label Name="ResultLabel" Content="Wynik" />
+            <CheckBox IsChecked="{Binding Source={StaticResource options}, Path=UseFullNames, Mode=TwoWay}">
+                Użyj pełnych nazw
+            </CheckBox>
         </StackPanel>
         <ScrollViewer Grid.Column="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
             <Label Name="LogLabel"
+                   xml:lang="pl-PL"
                    VerticalAlignment="Top"
                    HorizontalAlignment="Left" />
         </ScrollViewer>

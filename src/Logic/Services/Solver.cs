@@ -7,22 +7,17 @@ namespace PL_Resolution.Logic.Services
 {
     public class Solver
     {
-        private readonly Dictionary<int, string> _indexToName;
-        private readonly bool _showFullNames = true;
-
-        public Solver(Dictionary<int, string> indexToName)
-        {
-            _indexToName = indexToName;
-        }
-
         public (bool result, string log) FindResolution(List<Clause> inputClauses)
         {
             var log = new StringBuilder();
             log.AppendLine("Wejście Programu");
-            foreach (var clause in inputClauses) log.AppendLine(ClauseToString(clause));
+            foreach (var clause in inputClauses)
+            {
+                log.AppendLine(clause.ToString());
+            }
             var courseIndex = 0;
             var nextClauseIndex = inputClauses.Max(c => c.Index) + 1;
-            var allClauses = inputClauses.ToList();
+            var allClauses = inputClauses;
             do
             {
                 log.AppendLine($"\nPrzebieg {++courseIndex}:");
@@ -60,7 +55,7 @@ namespace PL_Resolution.Logic.Services
                     var clause = unique[i];
                     clause.Index = nextClauseIndex++;
                     allClauses.Add(clause);
-                    log.AppendLine(ClauseToString(clause));
+                    log.AppendLine(clause.ToString());
                 }
             } while (true);
         }
@@ -76,22 +71,6 @@ namespace PL_Resolution.Logic.Services
                 }
 
             return resolvents;
-        }
-
-        private string ClauseToString(Clause clause)
-        {
-            var ancestors = !(clause.Ancestors is null) ? $"<- {clause.Ancestors}" : "";
-            var literals = clause.Literals.ToList();
-            var first = literals.First();
-            var clauseString = (first.IsNegated ? "-" : "") + (!_showFullNames ? first.ToString() : _indexToName[first.Id]) + " ";
-            for (var i = 1; i < literals.Count; i++)
-            {
-                var literal = _showFullNames ? _indexToName[literals[i].Id] : literals[i].ToString();
-                var optionalDash = literals[i].IsNegated ? "-" : "";
-                clauseString += $" v {optionalDash}{literal}";
-            }
-
-            return $"{clause.Index}. {ancestors} : {clauseString}";
         }
     }
 }

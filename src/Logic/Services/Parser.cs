@@ -7,12 +7,10 @@ namespace PL_Resolution.Logic.Services
 {
     public static class Parser
     {
-        public static (List<Clause> clauses, Dictionary<int, string> indexToName) Parse(string[] fileLines)
+        public static List<Clause> Parse(string[] fileLines)
         {
             var symbolsPhase = true;
-            var symbolToIndex = new Dictionary<string, int>();
-            var indexToName = new Dictionary<int, string>();
-            var symbolIndex = 0;
+            var symbolToName = new Dictionary<string, string>();
             var clauseIndex = 0;
 
             var resultClauses = new List<Clause>();
@@ -31,12 +29,11 @@ namespace PL_Resolution.Logic.Services
                 {
                     if (split.Length < 2)
                         throw new ParseException(i + 1, "There must be at least 2 elements in line - symbol and name");
+
                     var symbol = split[0];
                     var name = split[1];
-                    var newIndex = ++symbolIndex;
 
-                    symbolToIndex[symbol] = newIndex;
-                    indexToName[newIndex] = name;
+                    symbolToName[symbol] = name;
                 }
                 else
                 {
@@ -45,24 +42,29 @@ namespace PL_Resolution.Logic.Services
                     {
                         var symbol = split[j];
                         var negation = false;
-                        if (symbol.First() == '-')
+                        if (symbol.First() == Constants.NEG_INPUT)
                         {
                             negation = true;
                             symbol = symbol.Substring(1);
                         }
 
-                        if (!symbolToIndex.ContainsKey(symbol))
+                        if (!symbolToName.ContainsKey(symbol))
                             throw new ParseException(i + 1, "Unrecognized symbol");
 
-                        var literal = new Literal(symbolToIndex[symbol], negation);
+                        var name = symbolToName[symbol];
+                        var literal = new Literal(symbol, name, negation);
                         literals.Add(literal);
                     }
 
-                    resultClauses.Add(new Clause(literals){Index = ++clauseIndex});
+                    var clause = new Clause(literals)
+                    {
+                        Index = ++clauseIndex
+                    };
+                    resultClauses.Add(clause);
                 }
             }
 
-            return (resultClauses, indexToName);
+            return resultClauses;
         }
     }
 }
