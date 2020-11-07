@@ -71,5 +71,11 @@ namespace PL_Resolution.Logic.Models
 
             return $"{Index}. {ancestors} : {clauseString}";
         }
+        public string GetNameOfIlness()
+        {
+            var clauseString = String.Join($" {Constants.ALT} ", Literals);
+
+            return clauseString;
+        }
     }
 }

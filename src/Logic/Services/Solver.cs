@@ -15,6 +15,7 @@ namespace PL_Resolution.Logic.Services
             {
                 log.AppendLine(clause.ToString());
             }
+            var illness = inputClauses[inputClauses.Count - 1];
             var courseIndex = 0;
             var nextClauseIndex = inputClauses.Max(c => c.Index) + 1;
             var allClauses = inputClauses;
@@ -35,6 +36,14 @@ namespace PL_Resolution.Logic.Services
                         {
                             var emptyClause = resolvents.First(r => r.Empty);
                             log.AppendLine($"Pusta Klauzula: <- {emptyClause.Ancestors}");
+
+                            string ilnessName = illness.GetNameOfIlness();
+
+                            if (ilnessName.Contains(Constants.NEG))
+                            {
+                                log.AppendLine("------------------- " + "Pacjent ma " + ilnessName.Remove(ilnessName.IndexOf(Constants.NEG), 1) + " -------------------");
+                            }
+
                             return (true, log.ToString());
                         }
 
